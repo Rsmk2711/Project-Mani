@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
-import { queryMani } from "@/lib/api";
+import { queryMani } from "../lib/api";
 
 type Message = {
   role: "user" | "mani";
