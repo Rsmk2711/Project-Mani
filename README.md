@@ -1,149 +1,240 @@
-# Mani — Flagship Product of RSMK AI
+# 🧠 Project Mani
 
-> Part of the **RSMK AI** product line · An **RSMK Technologies** group product
-
-Mani is a modular AI assistant — the first and flagship product under **RSMK AI**, the AI division of RSMK Technologies. It serves as the unified intelligence layer across all RSMK platforms. It is not a chatbot. It is an orchestrator — a system that decides *how* to answer, not just *what* to answer.
+> The AI brain of RSMK Technologies — a smart, fast, and free personal AI assistant that knows everything about RSMK Technologies and powers intelligent chat across all RSMK websites.
 
 ---
 
-## Vision
+## What is Mani?
 
-Every RSMK product (portfolio, BudgetBuddy, GridForge, and future apps) will eventually need an AI interface. Instead of building isolated chatbots per app, Mani acts as a shared brain — one system with domain-aware context switching.
+**Project Mani** is a centralized AI assistant built and owned by RSMK Technologies. It is not a generic chatbot — it is a purpose-built AI that carries deep knowledge about RSMK Technologies, its founder, and all projects under the brand.
 
-**Core promise:** Ask Mani anything across any RSMK platform, and it routes, reasons, and responds with the right context — always as **RSMK AI**, never exposing the underlying model.
+Mani is designed to:
+
+- Answer questions about RSMK Technologies and its projects accurately
+- Power chat widgets embedded across multiple RSMK websites
+- Use site-specific knowledge (RAG) to answer context-aware questions per website
+- Fall back to general AI reasoning for queries outside its knowledge base
+
+Think of Mani as the **single AI brain** that all RSMK websites share — each website adds its own layer of knowledge on top.
 
 ---
 
 ## Architecture
 
-Mani is built in layers. Each layer has a single responsibility.
+```
+┌─────────────────────────────────────────────────────┐
+│                  RSMK Websites                      │
+│   rsmk.me   │   BudgetBuddy   │   GridForge   │ ... │
+└──────┬───────────────┬─────────────────┬────────────┘
+       │               │                 │
+       ▼               ▼                 ▼
+┌─────────────────────────────────────────────────────┐
+│              Mani Core API (Render)                  │
+│                                                     │
+│  ┌─────────────────────────────────────────────┐   │
+│  │            Groq Inference Engine             │   │
+│  │         llama-3.3-70b-versatile              │   │
+│  └─────────────────────────────────────────────┘   │
+│                                                     │
+│  ┌──────────────┐    ┌──────────────────────────┐  │
+│  │  RSMK Core   │    │   Per-Site RAG Context   │  │
+│  │  Knowledge   │    │  (injected per request)  │  │
+│  │    Base      │    │                          │  │
+│  └──────────────┘    └──────────────────────────┘  │
+└─────────────────────────────────────────────────────┘
+```
+
+### How it works
+
+1. A user asks a question on any RSMK website
+2. The chat widget sends the query + site context to Mani Core API
+3. Mani uses its RSMK knowledge base + the site's RAG context to answer
+4. The response is returned and displayed in the chat widget
+
+---
+
+## Project Structure
 
 ```
-User Input
-    ↓
-[ Intent Classifier ]        ← What is the user trying to do?
-    ↓
-[ Context Router ]           ← Which domain? (Portfolio / BudgetBuddy / GridForge / General)
-    ↓
-[ AI Model (Claude API) ]    ← Generate response with domain-specific system prompt
-    ↓
-[ Response Builder ]         ← Enforce Mani identity, tone, and format
-    ↓
-User Output
+project-mani/
+├── backend/                  → Mani Core API (Node.js + Express)
+│   ├── src/
+│   │   ├── groq.js           → Groq inference caller
+│   │   ├── knowledge.js      → RSMK knowledge base loader
+│   │   └── prompt.js         → System prompt builder
+│   ├── knowledge/
+│   │   ├── rsmk-core.json    → RSMK Technologies + founder info
+│   │   ├── projects.json     → All RSMK projects data
+│   │   └── achievements.json → Hackathons, certifications, etc.
+│   ├── index.js              → Express server entry point
+│   ├── .env.example
+│   └── package.json
+│
+├── widget/                   → Embeddable chat widget
+│   ├── mani-widget.js        → Drop-in script tag widget
+│   └── mani-widget.css       → Widget styles
+│
+└── README.md
 ```
-
-> The AI backbone is the **Claude API** — reliable, fast, and already in use for RSMK AI. Hugging Face is reserved for self-hosted fine-tuned models only (future phases).
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology | Reason |
+| Layer | Technology | Why |
 |---|---|---|
-| Frontend | Next.js (App Router) | SSR, API routes, easy deployment on Vercel |
-| Backend / API | Next.js API routes (initially) | No separate server needed in v1 |
-| AI Model | Claude API (`claude-sonnet-4`) | Already proven in RSMK AI chatbot |
-| RAG (Phase 3) | LlamaIndex or LangChain + vector DB | Standard, well-documented, free tier available |
-| Vector DB | Supabase pgvector or Chroma (local) | Free and easy to self-host |
-| Deployment | Vercel | Already in RSMK stack |
+| AI Model | Groq — `llama-3.3-70b-versatile` | Free, fastest inference, highly accurate |
+| Backend | Node.js + Express | Lightweight, easy to maintain |
+| Hosting | Render (free tier) | Always-on, no cold start issues |
+| Knowledge | Structured JSON files | Simple, fast, no vector DB needed in v1 |
+| RAG | Context injection per request | Site-specific knowledge per website |
+| Widget | Vanilla JS + CSS | Embeds into any website with one script tag |
 
 ---
 
-## Roadmap
+## Phases
 
-### ✅ Phase 1 — Core System (Start Here)
+### ✅ Phase 1 — Mani Core
+A standalone API that knows everything about RSMK Technologies.
 
-**Goal:** Get a working Mani that responds correctly under RSMK identity with basic domain awareness.
+- Groq-powered backend
+- RSMK knowledge base (JSON)
+- System prompt with Mani's identity
+- Single `/api/chat` endpoint
+- Deployed on Render
 
-- Mani identity layer via system prompt (never reveals Claude or any provider)
-- Domain context switcher (Portfolio / BudgetBuddy / GridForge / General)
-- Basic chat interface in Next.js
-- API route that calls Claude API with domain-specific system prompt
-- Deploy to `mani.rsmk.me` (or as a component on `rsmk.me`)
+### 🔄 Phase 2 — Per-Site RAG Layer
+Each website gets its own knowledge layer injected into Mani.
 
-**What this looks like in code:**
-```js
-// Simplified Phase 1 logic
-const domainPrompts = {
-  portfolio: "You are Mani, RSMK's portfolio assistant. Answer about projects, skills, and experience.",
-  budgetbuddy: "You are Mani, assisting with BudgetBuddy finance tracking. Help with budgets and expenses.",
-  gridforge: "You are Mani, GridForge's smart grid assistant. Help with energy simulations.",
-  general: "You are Mani, the AI assistant of RSMK AI by RSMK Technologies."
-};
+- `rsmk.me` → portfolio, skills, contact info
+- `BudgetBuddy` → app features, FAQs, how-to guides
+- `GridForge` → project docs, simulation info
 
-const systemPrompt = domainPrompts[detectedDomain] ?? domainPrompts.general;
+### 🔜 Phase 3 — Embeddable Widget
+A single script tag that any RSMK website can drop in to get a full Mani chat UI.
+
+```html
+<script src="https://mani-core.onrender.com/widget/mani-widget.js"
+        data-site="rsmk-portfolio">
+</script>
+```
+
+### 🔜 Phase 4 — Ecosystem Integration
+- Mani connects to BudgetBuddy data
+- Mani connects to GridForge simulation outputs
+- Project Mani dashboard for managing knowledge bases
+
+---
+
+## API Reference
+
+### Base URL
+```
+https://mani-core.onrender.com
+```
+
+### Health Check
+```
+GET /
+```
+```json
+{ "status": "Mani Core is live 🧠" }
+```
+
+### Chat Endpoint
+```
+POST /api/chat
+```
+
+**Request body:**
+```json
+{
+  "query": "What is BudgetBuddy?",
+  "siteContext": "User is on the BudgetBuddy app page.",
+  "history": [
+    { "role": "user", "content": "Hello" },
+    { "role": "assistant", "content": "Hi! I'm Mani..." }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "response": "BudgetBuddy is an Android expense tracking app built by RSMK Technologies...",
+  "model": "llama-3.3-70b-versatile"
+}
 ```
 
 ---
 
-### 🔄 Phase 2 — Smart Routing
+## Environment Variables
 
-**Goal:** Mani detects intent and routes without the user specifying a domain.
-
-- Intent classification via LLM (prompt Claude to return a JSON with `domain` and `intent`)
-- Fallback chain: fast path (simple Q&A) → deep path (multi-turn reasoning)
-- Conversation memory within a session (pass history array in API call)
-- Typing indicators, error handling, retry logic in UI
+| Variable | Description |
+|---|---|
+| `GROQ_API_KEY` | Groq API key from console.groq.com |
+| `PORT` | Server port (default: 3001) |
 
 ---
 
-### 🧠 Phase 3 — RAG per Platform
+## Local Development
 
-**Goal:** Mani can answer questions grounded in real content from each RSMK site.
+```bash
+# Clone the repo
+git clone https://github.com/YOUR_USERNAME/project-mani.git
+cd project-mani/backend
 
-- Embed content from each platform (portfolio projects, BudgetBuddy docs, GridForge specs)
-- Store embeddings in Supabase pgvector (free) or Chroma (local dev)
-- On each query: retrieve relevant chunks → inject into system prompt as context
-- RAG pipeline per domain, not one shared index (keeps context clean)
+# Install dependencies
+npm install
 
-> This is what makes Mani genuinely useful — not just a wrapper around Claude, but a system with knowledge of your actual products.
+# Setup environment
+cp .env.example .env
+# Add your GROQ_API_KEY to .env
 
----
+# Run the server
+node index.js
 
-### 🔗 Phase 4 — Ecosystem Integration
-
-**Goal:** Mani talks *to* your apps, not just *about* them.
-
-- BudgetBuddy: Mani reads Firebase RTDB to answer "How much did I spend this month?"
-- GridForge: Mani triggers simulations and returns results in natural language
-- Portfolio: Mani surfaces latest projects, blog posts, and contact info dynamically
-- Unified Mani API — one endpoint, platform passed as a parameter
-
----
-
-## Identity Rules
-
-These are non-negotiable across all phases:
-
-- Mani **never** mentions Claude, Anthropic, OpenAI, Hugging Face, or any model provider
-- Mani **always** refers to itself as *"Mani, a product of RSMK AI by RSMK Technologies"*
-- Tone: confident, concise, technical when needed, friendly when appropriate
-- If asked "What AI are you?": *"I'm Mani — RSMK AI's assistant, built by RSMK Technologies."*
+# Test
+curl -X POST http://localhost:3001/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"query": "Who is Mani?"}'
+```
 
 ---
 
-## What This Is Not
+## Deployment
 
-- Not a fine-tuned model (Phase 1 and 2 are entirely prompt-based — fast to ship)
-- Not a separate mobile app (Mani is a web-first system embedded into existing RSMK apps)
-- Not a general-purpose chatbot (Mani is domain-scoped and identity-locked)
-
----
-
-## Project Status
-
-> 🚧 **Phase 1 — In Development**
-
-- [x] Architecture defined
-- [ ] Tech stack finalized
-- [ ] Next.js project scaffolded
-- [ ] Claude API integration with identity system prompt
-- [ ] Domain router (keyword-based, Phase 1)
-- [ ] Basic chat UI
-- [ ] Deployed to `mani.rsmk.me`
+| Service | Platform | URL |
+|---|---|---|
+| Mani Core API | Render | `https://mani-core.onrender.com` |
+| Widget CDN | Render static | `https://mani-core.onrender.com/widget/` |
 
 ---
 
-## Maintained by
+## How Websites Embed Mani
 
-**RSMK AI** · A product of **RSMK Technologies** — [rsmk.me](https://rsmk.me)
+Any RSMK website can connect to Mani with a single fetch call:
+
+```js
+const response = await fetch("https://mani-core.onrender.com/api/chat", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    query: userMessage,
+    siteContext: "User is browsing the RSMK portfolio website.",
+    history: conversationHistory
+  })
+});
+
+const data = await response.json();
+console.log(data.response);
+```
+
+---
+
+## Built by
+
+**RSMK Technologies** — a personal tech brand by Srinivasa Manikanta Rajapantula.
+
+> rsmk.me · GitHub · LinkedIn
