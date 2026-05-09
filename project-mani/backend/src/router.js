@@ -1,6 +1,6 @@
 const routes = {
-  code: "Qwen/Qwen2.5-Coder-32B-Instruct",
-  general: "mistralai/Mistral-7B-Instruct-v0.3",
+  code: "bigcode/starcoder2-3b",
+  general: "HuggingFaceH4/zephyr-7b-beta",
   summarize: "facebook/bart-large-cnn",
 };
 
