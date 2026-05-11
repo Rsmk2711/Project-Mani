@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import TypingIndicator from "./TypingIndicator";
@@ -65,11 +66,12 @@ export default function ChatWindow() {
               >
                 {/* Hero */}
                 <div className="text-center relative w-full flex flex-col items-center">
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[#d4af37]/10 blur-[50px] rounded-full pointer-events-none"></div>
-                  <div className="relative w-24 h-24 rounded-[2rem] bg-gradient-to-br from-[#8b5cf6] to-[#d4af37] flex items-center justify-center text-white text-4xl font-bold mx-auto mb-6 shadow-[0_0_40px_rgba(212,175,55,0.2)] border border-white/20">
-                    M
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[#38c8f1]/10 blur-[50px] rounded-full pointer-events-none"></div>
+                  {/* Changed the M avatar to the new logo with native colors inside a dark wrapper for pure electric aesthetic */}
+                  <div className="relative w-32 h-32 rounded-[2.5rem] bg-[#0c0c0e]/80 flex items-center justify-center shadow-[0_0_40px_rgba(56,200,241,0.2)] border border-[#38c8f1]/20 overflow-hidden mb-6">
+                    <Image src="/rsmk.svg" alt="RSMK Logo" width={90} height={90} className="object-contain" />
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-[#f3e8ff] to-[#d4af37] mb-4 tracking-tight text-center">
+                  <h2 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white via-[#e0f2fe] to-[#38c8f1] mb-4 tracking-tight text-center">
                     Hi, I&apos;m Mani
                   </h2>
                   <p className="text-[#a1a1aa] text-base md:text-lg max-w-lg mx-auto leading-relaxed text-center">

@@ -29,10 +29,10 @@ export default function QuickLinks({ onSelect }: Props) {
             transition={{ duration: 0.3, delay: i * 0.05 + 0.3 }}
             key={link.label}
             onClick={() => onSelect(link.label)}
-            className="group relative overflow-hidden rounded-2xl bg-[#0c0c0e]/80 border border-white/[0.04] p-4 text-left transition-all duration-300 hover:bg-[#121214] hover:border-[#d4af37]/40 hover:shadow-[0_0_20px_rgba(212,175,55,0.1)] flex items-center gap-3 w-full"
+            className="group relative overflow-hidden rounded-2xl bg-[#0c0c0e]/80 border border-white/[0.04] p-4 text-left transition-all duration-300 hover:bg-[#121214] hover:border-[#38c8f1]/40 hover:shadow-[0_0_20px_rgba(56,200,241,0.1)] flex items-center gap-3 w-full"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#8b5cf6]/0 via-[#8b5cf6]/0 to-[#d4af37]/0 group-hover:from-[#8b5cf6]/5 group-hover:to-[#d4af37]/5 transition-all duration-500"></div>
-            <div className="w-8 h-8 rounded-full bg-white/[0.03] border border-white/[0.05] flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:border-[#d4af37]/30 transition-all duration-300">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0050ff]/0 via-[#0050ff]/0 to-[#38c8f1]/0 group-hover:from-[#0050ff]/5 group-hover:to-[#38c8f1]/5 transition-all duration-500"></div>
+            <div className="w-8 h-8 rounded-full bg-white/[0.03] border border-white/[0.05] flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:border-[#38c8f1]/30 transition-all duration-300">
               <span className="text-sm">{link.icon}</span>
             </div>
             <span className="text-sm text-[#d4d4d8] group-hover:text-white transition-colors">
