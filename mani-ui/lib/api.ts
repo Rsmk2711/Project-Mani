@@ -1,6 +1,5 @@
 const API_URL =
-  process.env.NEXT_PUBLIC_MANI_API_URL ||
-  "https://project-mani-c0t3.onrender.com";
+  process.env.NEXT_PUBLIC_MANI_API_URL ;
 
 export interface Message {
   role: "user" | "assistant";
